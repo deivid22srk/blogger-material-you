@@ -1,0 +1,40 @@
+{
+  "name": "blogger-material-you",
+  "version": "1.0.0",
+  "description": "Tema Material You (Material 3) completo para o Blogger — cor dinâmica, claro/escuro, componentes Material Web",
+  "type": "module",
+  "keywords": [
+    "blogger",
+    "blogger-theme",
+    "material-you",
+    "material-design-3",
+    "material-web",
+    "material-3"
+  ],
+  "license": "MIT",
+  "author": "deivid22srk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deivid22srk/blogger-material-you.git"
+  },
+  "scripts": {
+    "build": "vite build && node scripts/gen-tokens.mjs && node scripts/build-theme.mjs",
+    "build:js": "vite build",
+    "build:xml": "node scripts/build-theme.mjs",
+    "validate": "node scripts/validate-xml.mjs dist/theme.xml",
+    "preview": "node scripts/preview.mjs",
+    "tokens": "node scripts/gen-tokens.mjs"
+  },
+  "dependencies": {
+    "@material/material-color-utilities": "^0.4.0",
+    "@material/web": "^2.5.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "fast-xml-parser": "^5.2.0",
+    "vite": "^6.3.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
