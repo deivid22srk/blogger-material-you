@@ -1,0 +1,73 @@
+name: Build Blogger Theme
+
+# Gera o theme.xml final e publica os assets (theme.js) no GitHub Pages.
+# O theme.xml resultante fica disponível como artefato e em
+# https://deivid22srk.github.io/blogger-material-you/theme.xml
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Uma execução por vez; cancela builds redundantes de pushes consecutivos
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Build (theme.js + tokens + theme.xml)
+        run: npm run build
+
+      - name: Validar XML gerado
+        run: npm run validate
+
+      - name: Página inicial do Pages (índice com instruções)
+        run: node scripts/pages-index.mjs
+
+      - name: Upload do artefato (dist)
+        uses: actions/upload-artifact@v4
+        with:
+          name: blogger-material-you
+          path: dist/
+          if-no-files-found: error
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload para Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
